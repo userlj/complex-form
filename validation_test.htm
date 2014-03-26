@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="validation.js">
+		</script>
+		<link rel="shortcut icon" href="../images/icon/meng_full.ico"/>
+		<title>Validation Test Form</title>
+	<body>
+		<center><h1>Validation Test Form</h1>
+			<form name="testForm">
+				<table width="page">
+					<tr>
+						<td align="center">Name</td>
+						<td align="center">SSN</td>
+						<td align="center">Data of Birth</td>
+						<td align="center">Monthly Income</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="name" id="namei" placeholder="Firstname Lastname"></td>
+						<td><input type="text" name="ssn" id="ssni" placeholder="xxx-xx-xxxx"></td>
+						<td><input type="text" name="birth" id="birthi" placeholder="MM/DD/YYYY"></td>
+						<td><input type="text" name="income" id="incomei" onfocus="value='$'" placeholder="$1000.00"></td>
+						<td><button onclick="if(validateForm('testForm')){alert('Good! Data is valid!');return false}else{return false;}">Submit</button></td>
+					</tr>
+							
+					
+			</form>
+	</body>
+</html>
+

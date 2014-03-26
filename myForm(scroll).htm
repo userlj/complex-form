@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="validation.js"></script>
+		<script type="text/javascript">
+
+
+			var personArray = new Array();	// store person objects in an array
+
+			var mark = 0;	// the index of Person object that in the first row
+			var markdown = 0
+
+
+			function Person(pname, ssn, birth, income)	// Person object
+			{
+				this.pname = pname;
+                                this.ssn = ssn;
+                                this.birth = birth;
+                                this.income = income;
+                        }
+
+
+			function printPerson(pos, arrIndex)	// print person object
+			{
+				document.getElementById("name"+pos).value = personArray[arrIndex].pname;
+                                document.getElementById("ssn"+pos).value = personArray[arrIndex].ssn;
+                                document.getElementById("birth"+pos).value = personArray[arrIndex].birth;
+                                document.getElementById("income"+pos).value = personArray[arrIndex].income;
+			}
+
+
+			function addPerson()	// add new element to personArray
+			{
+                                var name = document.getElementById("namei").value;
+                                var ssn = document.getElementById("ssni").value;
+                                var birth = document.getElementById("birthi").value;
+                                var income = document.getElementById("incomei").value;
+                                
+                                var newPerson = new Person(name, ssn, birth, income);	
+				personArray.push(newPerson);
+			}
+
+
+			function clear(index)	// clear text fields after adding a new object
+			{
+                                document.getElementById("name"+index).value = "";
+                                document.getElementById("ssn"+index).value = "";
+                                document.getElementById("birth"+index).value = "";
+                                document.getElementById("income"+index).value = "";
+			}
+
+
+			function add()	// display after add object to array
+			{
+				if(!validateForm("addForm"))	// form is not validate
+				{
+					return false;
+				}
+
+				addPerson();
+				len = personArray.length;
+				if(len<=5)
+				{
+					mark = 0;
+					for(var i=1; i<=len; i++)
+					{
+						printPerson(i,i-1);
+					}
+				} 
+				else // always display the new one at the bottom of the list
+				{
+					document.getElementById("btnup").disabled = false;
+					mark = 	len - 5;
+					for(var i=1; i<=5; i++)
+					{
+						printPerson(i,len-6+i);
+					}
+				}
+				clear("i");
+				alert("A new record has been successfully added!");
+			
+				return false;
+
+			}
+
+
+			function down()	// scroll down
+			{
+				len = personArray.length;
+				document.getElementById("btnup").disabled = false;//gai
+				if(mark >= len - 5)
+				{
+					// already at the end, invalid the button
+					// or print a message
+					document.getElementById("btndown").disabled = true;//gai
+				}
+				else
+				{
+					// scroll down
+					for(var i=1; i<=5; i++)
+					{
+						printPerson(i,mark+i);
+					}
+					mark++;
+				}
+				return false;
+			}
+
+
+/*                        function disableUpButton()	// not used yet
+			{
+                                document.getElementById("up").disabled = true;
+			}
+
+
+                        function enableUpButton()	// not used yet
+			{
+                                document.getElementById("up").disabled = false;
+                        }
+*/
+
+			function up()	// scroll up
+			{
+				//alert("from up");
+				len = personArray.length;
+				document.getElementById("btndown").disabled = false;//gai
+				if(mark == 0)
+				{
+					// already at the top, invalid the button
+					// or print a message
+					// disableUpButton();					
+					document.getElementById("btnup").disabled = true;//gai
+
+				}
+				else
+				{
+					//enableUpButton();
+					for(var i=1; i<=5; i++)
+					{
+						printPerson(i, mark-2+i);
+					}
+					mark--;
+				}
+				return false;
+			}
+
+
+			function del()	// delete element of personArray
+			{
+
+				for (var i=1; i<=5; i++) 
+
+				{
+					if (document.getElementById("del"+i).checked) 
+					{
+
+						if(len<=5) 
+                	                	{
+	      						personArray.splice(i-1,1);
+		
+		                                	len = personArray.length;
+
+                	                	        mark = 0;
+                	                	        for(var i=1; i<=len; i++)
+                	                	        {
+                	                	                printPerson(i,i-1);
+                	                	        }
+							for(var i=len+1; i<=5; i++)
+							{
+								clear(i);
+							}
+                        	        	} 
+                        	        	else // length > 5
+                        	        	{
+	      						personArray.splice(i-1+mark,1);
+		
+		                                	len = personArray.length;
+
+							// already at the bottom, need to scroll down
+
+							if(mark > len-5)
+							{
+                        	        	        	mark =  len - 5;
+                        	        	        	for(var i=1; i<=5; i++)
+                        	        	        	{
+                                        	        		printPerson(i,len-6+i);
+                                        			}
+                                			}
+
+							// not at the bottom, so just bring one element up
+							
+							else	// mark <= len - 5
+							{
+								// mark not change
+                        	        	        	for(var i=1; i<=5; i++)
+                        	        	        	{
+                                        	        		printPerson(i,mark+i-1);
+                                        			}
+							}
+    						}
+					}
+				}
+				return false;
+			}
+
+
+		</script>
+		<link rel="shortcut icon" href="../images/icon/meng_full.ico"/>
+		<title>My Scrolling Data Form</title>
+	</head>
+	<body>
+		<center><h1>My Scrolling Data Form</h1>
+			<form name="myForm">
+				<table width="page">
+					<tr>
+						<td align="center">delete</td>
+						<td align="center">Name</td>
+						<td align="center">SSN</td>
+						<td align="center">Data of Birth</td>
+						<td align="center">Monthly Income</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="del" id="del1" onclick="del()"></td>
+						<td><input type="text" name="name1" id="name1" readonly></td>
+						<td><input type="text" name="ssn1" id="ssn1" readonly></td>
+						<td><input type="text" name="birth1" id="birth1" readonly></td>
+						<td><input type="text" name="income1" id="income1" readonly></td>
+						<td><input type="button" id="btnup" disabled=true onclick="return up()" value="Scroll Up" style="width:90px"><!--//gai Scroll Up</button>--></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="del" id="del2" onclick="del()"></td>
+						<td><input type="text" name="name2" id="name2" readonly></td>
+						<td><input type="text" name="ssn2" id="ssn2" readonly></td>
+						<td><input type="text" name="birth2" id=birth2 readonly></td>
+						<td><input type="text" name="income2" id="income2"readonly></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="del" id="del3" onclick="del()"></td>
+						<td><input type="text" name="name3" id="name3" readonly></td>
+						<td><input type="text" name="ssn3" id="ssn3" readonly></td>
+						<td><input type="text" name="birth3" id="birth3" readonly></td>
+						<td><input type="text" name="income3" id="income3" readonly></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="del" id="del4" onclick="del()"></td>
+						<td><input type="text" name="name4" id="name4" readonly></td>
+						<td><input type="text" name="ssn4" id="ssn4" readonly></td>
+						<td><input type="text" name="birth4" id="birth4" readonly></td>
+						<td><input type="text" name="income4" id="income4"readonly></td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="del" id="del5" onclick="del()"></td>
+						<td><input type="text" name="name5" id="name5" readonly></td>
+						<td><input type="text" name="ssn5" id="ssn5" readonly></td>
+						<td><input type="text" name="birth5" id="birth5" readonly></td>
+						<td><input type="text" name="income5" id="income5" readonly></td>
+						<td><input type="button" id="btndown" disabled=true onclick="return down()" style="width:90px" value="Scroll Down"><!--//gai Scroll Down</button>--></td>
+					</tr>
+				</table>
+			</form>
+			<hr>
+			<form name="addForm">
+				To add data to the list, fill in the form below and click on "Add"
+				<br>
+				<td><button onclick="return del()" style="width:80px">Delete</button></td>
+				<td><input type="text" name="namei" id="namei" placeholder="Firstname Lastname"></td>
+				<td><input type="text" name="ssni" id="ssni" placeholder="xxx-xx-xxxx"></td>
+				<td><input type="text" name="birthi" id="birthi" placeholder="MM/DD/YYYY"></td>
+				<td><input type="text" name="incomei" id="incomei" onfocus="value='$'" placeholder="$1000.00"></td>
+				<button onclick="return add()" style="width:80px">Add</button>
+
+			</form>
+		</center>
+	</body>
+</html>
+
+
